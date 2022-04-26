@@ -4,6 +4,17 @@ Visco1D (Pollitz, 1997) computes the time-dependent response of a radially symet
 
 This wrapper uses Python to improve the usability of the Visco1D code. 
 
+### Draft of approximate flow control
+
+```mermaid
+flowchart TD
+    A[Start] --> B{Is it?}
+    B -- Yes --> C[OK]
+    C --> D[Rethink]
+    D --> B
+    B -- No ----> E[End]
+```
+
 #### References
 
 Pollitz, Fred F. "Gravitational viscoelastic postseismic relaxation on a layered spherical Earth." Journal of Geophysical Research: Solid Earth 102.B8 (1997): 17921-17941.
