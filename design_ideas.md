@@ -19,6 +19,7 @@
 * displacements and time series, Fred's format and/or modern format
 * plots of things
 * reporting on user parameters, arg json, earth model
+* Print statements as the wrapper moves from one stage to the next
 
 
 ### Kathryn's design notes
