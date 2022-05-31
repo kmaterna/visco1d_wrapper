@@ -23,6 +23,14 @@ def read_earth_model(earth_model_file_name):
         earth_model["radius"] = float(first_line_values[2])
         earth_model["depfac"] = float(first_line_values[3])
 
+    # Read earth.model Layers
+    # Maxwell only case columns:
+    # bottom_radius",
+    #         "top_radius",
+    #         "density",
+    #         "bulk_modulus",
+    #         "shear_modulus",
+    #         "maxwell_viscosity",
     earth_model["data"] = pd.read_csv(
         earth_model["file_name"],
         delim_whitespace=True,
@@ -33,10 +41,19 @@ def read_earth_model(earth_model_file_name):
             "density",
             "bulk_modulus",
             "shear_modulus",
-            "maxwell_viscosity",
-            "extra",
+            "to_process_1",  # Could be Maxwell viscosity or Kelvin shear modulus
+            "to_process_2",  # First column present if Burgers layer
+            "to_process_3",  # First column present if Burgers layer
+            "to_process_4",  # First column present if Burgers layer
         ],
     )
+
+    # Are there any Burgers rheology layers
+    any_burgers_layers = ~earth_model["data"]["to_process_2"].isnull().values.any()
+    if any_burgers_layers:
+        pass
+    else:
+        earth_model["data"]["maxwell_viscosity"] = earth_model["data"]["to_process_1"]
 
     # Physical and useful derived parameters
     # bottom_radius: km
