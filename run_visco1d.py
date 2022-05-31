@@ -7,49 +7,55 @@ import subprocess
 
 # TODO: Replace os.system with subprocess?
 
-# bottom_radius: km
-# top_radius: km
-# density: g / cm**3
-# bulk modulus: 10**10 Pa
-# shear modulus:10**10 Pa
-# viscosity: 10**18 Pa s
 
-# Read earth model
-earth_model = {}
-earth_model["file_name"] = "./data/earth.modelMAXWELL"
+def read_earth_model(earth_model_file_name):
+    # Read earth model
+    earth_model = {}
+    earth_model["file_name"] = earth_model_file_name
 
-with open(earth_model["file_name"]) as f:
-    first_line_values = f.readline().strip().split()
-    earth_model["n_layers"] = int(first_line_values[0])
-    earth_model["n_ve_layers"] = int(first_line_values[1])
-    earth_model["radius"] = float(first_line_values[2])
-    earth_model["depfac"] = float(first_line_values[3])
+    with open(earth_model["file_name"]) as f:
+        first_line_values = f.readline().strip().split()
+        earth_model["n_layers"] = int(first_line_values[0])
+        earth_model["n_ve_layers"] = int(first_line_values[1])
+        earth_model["radius"] = float(first_line_values[2])
+        earth_model["depfac"] = float(first_line_values[3])
 
-earth_model["data"] = pd.read_csv(
-    earth_model["file_name"],
-    delim_whitespace=True,
-    skiprows=1,
-    names=[
-        "bottom_radius",
-        "top_radius",
-        "density",
-        "bulk_modulus",
-        "shear_modulus",
-        "viscosity",
-    ],
-)
+    earth_model["data"] = pd.read_csv(
+        earth_model["file_name"],
+        delim_whitespace=True,
+        skiprows=1,
+        names=[
+            "bottom_radius",
+            "top_radius",
+            "density",
+            "bulk_modulus",
+            "shear_modulus",
+            "viscosity",
+        ],
+    )
 
-# Physical and useful derived parameters
-earth_model["data"]["bulk_modulus_physical"] = (
-    earth_model["data"]["shear_modulus"] * 1e10
-)
-earth_model["data"]["shear_modulus_physical"] = (
-    earth_model["data"]["shear_modulus"] * 1e10
-)
-earth_model["data"]["viscosity_physical"] = earth_model["data"]["viscosity"] * 1e18
-earth_model["data"]["viscosity_physical_log10"] = np.log10(
-    earth_model["data"]["viscosity_physical"]
-)
+    # Physical and useful derived parameters
+    # bottom_radius: km
+    # top_radius: km
+    # density: g / cm**3
+    # bulk modulus: 10**10 Pa
+    # shear modulus:10**10 Pa
+    # viscosity: 10**18 Pa s
+    earth_model["data"]["bulk_modulus_physical"] = (
+        earth_model["data"]["shear_modulus"] * 1e10
+    )
+    earth_model["data"]["shear_modulus_physical"] = (
+        earth_model["data"]["shear_modulus"] * 1e10
+    )
+    earth_model["data"]["viscosity_physical"] = earth_model["data"]["viscosity"] * 1e18
+    earth_model["data"]["viscosity_physical_log10"] = np.log10(
+        earth_model["data"]["viscosity_physical"]
+    )
+    return earth_model
+
+
+earth_model_file_name = "./data/earth.modelMAXWELL"
+earth_model = read_earth_model(earth_model_file_name)
 
 # Plot earth model
 plt.close("all")
