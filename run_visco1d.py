@@ -1,9 +1,9 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import IPython
+import argparse
 import os
 import pandas as pd
-import subprocess
 
 # TODO: Replace os.system with subprocess?
 
@@ -54,106 +54,118 @@ def read_earth_model(earth_model_file_name):
     return earth_model
 
 
-earth_model_file_name = "./data/earth.modelMAXWELL"
-earth_model = read_earth_model(earth_model_file_name)
+def plot_earth_model(earth_model):
+    # Plot earth model
+    plt.figure(figsize=(15, 5))
+    plt.subplot(1, 4, 1)
+    for i in range(len(earth_model["data"])):
+        plt.fill(
+            [
+                0,
+                0,
+                earth_model["data"]["density"][i],
+                earth_model["data"]["density"][i],
+            ],
+            [
+                earth_model["data"]["bottom_radius"][i],
+                earth_model["data"]["top_radius"][i],
+                earth_model["data"]["top_radius"][i],
+                earth_model["data"]["bottom_radius"][i],
+            ],
+            "b",
+        )
+    plt.xlabel("density (g/cm^3)")
+    plt.ylabel("radius (km)")
 
-# Plot earth model
-plt.close("all")
-plt.figure(figsize=(15, 5))
-plt.subplot(1, 4, 1)
-for i in range(len(earth_model["data"])):
-    plt.fill(
-        [0, 0, earth_model["data"]["density"][i], earth_model["data"]["density"][i]],
-        [
-            earth_model["data"]["bottom_radius"][i],
-            earth_model["data"]["top_radius"][i],
-            earth_model["data"]["top_radius"][i],
-            earth_model["data"]["bottom_radius"][i],
-        ],
-        "b",
-    )
-plt.xlabel("density (g/cm^3)")
-plt.ylabel("radius (km)")
+    plt.subplot(1, 4, 2)
+    for i in range(len(earth_model["data"])):
+        plt.fill(
+            [
+                0,
+                0,
+                earth_model["data"]["bulk_modulus_physical"][i],
+                earth_model["data"]["bulk_modulus_physical"][i],
+            ],
+            [
+                earth_model["data"]["bottom_radius"][i],
+                earth_model["data"]["top_radius"][i],
+                earth_model["data"]["top_radius"][i],
+                earth_model["data"]["bottom_radius"][i],
+            ],
+            "b",
+        )
+    plt.xlabel("bulk modulus (Pa)")
+    # plt.ylabel("radius (km)")
 
-plt.subplot(1, 4, 2)
-for i in range(len(earth_model["data"])):
-    plt.fill(
-        [
-            0,
-            0,
-            earth_model["data"]["bulk_modulus_physical"][i],
-            earth_model["data"]["bulk_modulus_physical"][i],
-        ],
-        [
-            earth_model["data"]["bottom_radius"][i],
-            earth_model["data"]["top_radius"][i],
-            earth_model["data"]["top_radius"][i],
-            earth_model["data"]["bottom_radius"][i],
-        ],
-        "b",
-    )
-plt.xlabel("bulk modulus (Pa)")
-# plt.ylabel("radius (km)")
+    plt.subplot(1, 4, 3)
+    for i in range(len(earth_model["data"])):
+        plt.fill(
+            [
+                0,
+                0,
+                earth_model["data"]["shear_modulus_physical"][i],
+                earth_model["data"]["shear_modulus_physical"][i],
+            ],
+            [
+                earth_model["data"]["bottom_radius"][i],
+                earth_model["data"]["top_radius"][i],
+                earth_model["data"]["top_radius"][i],
+                earth_model["data"]["bottom_radius"][i],
+            ],
+            "b",
+        )
+    plt.xlabel("shear modulus (Pa)")
+    # plt.ylabel("radius (km)")
 
-plt.subplot(1, 4, 3)
-for i in range(len(earth_model["data"])):
-    plt.fill(
-        [
-            0,
-            0,
-            earth_model["data"]["shear_modulus_physical"][i],
-            earth_model["data"]["shear_modulus_physical"][i],
-        ],
-        [
-            earth_model["data"]["bottom_radius"][i],
-            earth_model["data"]["top_radius"][i],
-            earth_model["data"]["top_radius"][i],
-            earth_model["data"]["bottom_radius"][i],
-        ],
-        "b",
-    )
-plt.xlabel("shear modulus (Pa)")
-# plt.ylabel("radius (km)")
+    plt.subplot(1, 4, 4)
+    for i in range(len(earth_model["data"])):
+        plt.fill(
+            [
+                0,
+                0,
+                earth_model["data"]["viscosity_physical_log10"][i],
+                earth_model["data"]["viscosity_physical_log10"][i],
+            ],
+            [
+                earth_model["data"]["bottom_radius"][i],
+                earth_model["data"]["top_radius"][i],
+                earth_model["data"]["top_radius"][i],
+                earth_model["data"]["bottom_radius"][i],
+            ],
+            "b",
+        )
+    plt.xlabel("log10 Maxwell viscosity (Pa s)")
+    # plt.ylabel("radius (km)")
 
-plt.subplot(1, 4, 4)
-for i in range(len(earth_model["data"])):
-    plt.fill(
-        [
-            0,
-            0,
-            earth_model["data"]["viscosity_physical_log10"][i],
-            earth_model["data"]["viscosity_physical_log10"][i],
-        ],
-        [
-            earth_model["data"]["bottom_radius"][i],
-            earth_model["data"]["top_radius"][i],
-            earth_model["data"]["top_radius"][i],
-            earth_model["data"]["bottom_radius"][i],
-        ],
-        "b",
-    )
-plt.xlabel("log10 viscosity (Pa s)")
-# plt.ylabel("radius (km)")
-
-
-plt.show(block=True)
-
-print(earth_model["data"])
-
-# success = os.system(f"cp {earth_model['file_name']} earth.model")
-
-# cp earth.modelHOMO30 earth.model
-# nice decay4m <<! > /dev/null
-# 2 1500
-# !
-# nice vsphm <<! > /dev/null 10.
-# !
-# nice decay <<! > /dev/null 2 1500
-# !
-# nice vtordep <<! > /dev/null
-# 10.
-# !
-# nice strainA < strainx.inTHRUST > /dev/null mv strainA.out strainA.outTHRUSTg
+    plt.show(block=True)
 
 
-IPython.embed(banner1="")
+def main():
+    plt.close("all")
+    earth_model_file_name = "./data/earth.modelMAXWELL"
+    earth_model = read_earth_model(earth_model_file_name)
+    plot_earth_model(earth_model)
+
+    print(earth_model["data"])
+
+    # success = os.system(f"cp {earth_model['file_name']} earth.model")
+
+    # cp earth.modelHOMO30 earth.model
+    # nice decay4m <<! > /dev/null
+    # 2 1500
+    # !
+    # nice vsphm <<! > /dev/null 10.
+    # !
+    # nice decay <<! > /dev/null 2 1500
+    # !
+    # nice vtordep <<! > /dev/null
+    # 10.
+    # !
+    # nice strainA < strainx.inTHRUST > /dev/null mv strainA.out strainA.outTHRUSTg
+
+    IPython.embed(banner1="")
+
+
+if __name__ == "__main__":
+    # TODO: add argument parsing
+    main()
