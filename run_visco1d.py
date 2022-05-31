@@ -6,6 +6,9 @@ import os
 import pandas as pd
 
 # TODO: Replace os.system with subprocess?
+VISCO1D_BULK_MODULUS_TO_MKS_BULK_MODULUS = 1e10
+VISCO1D_SHEAR_MODULUS_TO_MKS_SHEAR_MODULUS = 1e10
+VISCO1D_VISCOSITY_TO_MKS_VISCOSITY = 1e18
 
 
 def read_earth_model(earth_model_file_name):
@@ -42,17 +45,18 @@ def read_earth_model(earth_model_file_name):
     # bulk modulus: 10**10 Pa
     # shear modulus:10**10 Pa
     # viscosity: 10**18 Pa s
-    earth_model["data"]["bulk_modulus_physical"] = (
-        earth_model["data"]["shear_modulus"] * 1e10
+    earth_model["data"]["bulk_modulus_mks"] = (
+        earth_model["data"]["shear_modulus"] * VISCO1D_BULK_MODULUS_TO_MKS_BULK_MODULUS
     )
-    earth_model["data"]["shear_modulus_physical"] = (
-        earth_model["data"]["shear_modulus"] * 1e10
+    earth_model["data"]["shear_modulus_mks"] = (
+        earth_model["data"]["shear_modulus"]
+        * VISCO1D_SHEAR_MODULUS_TO_MKS_SHEAR_MODULUS
     )
-    earth_model["data"]["maxwell_viscosity_physical"] = (
-        earth_model["data"]["maxwell_viscosity"] * 1e18
+    earth_model["data"]["maxwell_viscosity_mks"] = (
+        earth_model["data"]["maxwell_viscosity"] * VISCO1D_VISCOSITY_TO_MKS_VISCOSITY
     )
-    earth_model["data"]["maxwell_viscosity_physical_log10"] = np.log10(
-        earth_model["data"]["maxwell_viscosity_physical"]
+    earth_model["data"]["maxwell_viscosity_mks_log10"] = np.log10(
+        earth_model["data"]["maxwell_viscosity_mks"]
     )
     return earth_model
 
@@ -85,15 +89,15 @@ def plot_earth_model(earth_model):
     plot_radius_subplot(earth_model, "density", "density (g/cm^3)")
 
     plt.subplot(1, 4, 2)
-    plot_radius_subplot(earth_model, "bulk_modulus_physical", "bulk modulus (Pa)")
+    plot_radius_subplot(earth_model, "bulk_modulus_mks", "bulk modulus (Pa)")
 
     plt.subplot(1, 4, 3)
-    plot_radius_subplot(earth_model, "shear_modulus_physical", "shear modulus (Pa)")
+    plot_radius_subplot(earth_model, "shear_modulus_mks", "shear modulus (Pa)")
 
     plt.subplot(1, 4, 4)
     plot_radius_subplot(
         earth_model,
-        "maxwell_viscosity_physical_log10",
+        "maxwell_viscosity_mks_log10",
         "log10 Maxwell viscosity (Pa s)",
     )
     plt.show(block=True)
