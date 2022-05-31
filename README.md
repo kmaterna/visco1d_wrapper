@@ -4,6 +4,30 @@ Visco1D (Pollitz, 1997) computes the time-dependent response of a radially symet
 
 This wrapper uses Python to improve the usability of the Visco1D code. 
 
+### Assumed folder structure
+```
+visco1d_wrapper/
+├── README.md
+├── bin_visco1d/
+│   ├── decay (executable)
+│   ├── decay4 (executable)
+│   ├── decay4m (executable)
+│   ├── vsphdep (executable)
+│   ├── vsphm (executable)
+│   └── vtordep (executable)
+├── data/
+│   ├── earth_model_0001
+│   ├── earth_model_0002
+│   └── etc.
+└── runs/
+    ├── a27af56b-7d3b-4147-9ba1-626e04179437
+    |   ├── earth_model.pdf
+    |   └── strain.out
+    └── 09c86198-6cc5-436a-94ad-02883d401b6a
+        ├── earth_model.pdf
+        └── strain.out
+```
+
 ### Highly speculative draft of approximate flow control
 
 ```mermaid
