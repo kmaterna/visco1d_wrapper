@@ -30,7 +30,8 @@ def read_earth_model(earth_model_file_name):
             "density",
             "bulk_modulus",
             "shear_modulus",
-            "viscosity",
+            "maxwell_viscosity",
+            "extra",
         ],
     )
 
@@ -47,96 +48,54 @@ def read_earth_model(earth_model_file_name):
     earth_model["data"]["shear_modulus_physical"] = (
         earth_model["data"]["shear_modulus"] * 1e10
     )
-    earth_model["data"]["viscosity_physical"] = earth_model["data"]["viscosity"] * 1e18
-    earth_model["data"]["viscosity_physical_log10"] = np.log10(
-        earth_model["data"]["viscosity_physical"]
+    earth_model["data"]["maxwell_viscosity_physical"] = (
+        earth_model["data"]["maxwell_viscosity"] * 1e18
+    )
+    earth_model["data"]["maxwell_viscosity_physical_log10"] = np.log10(
+        earth_model["data"]["maxwell_viscosity_physical"]
     )
     return earth_model
 
 
 def plot_earth_model(earth_model):
     # Plot earth model
+
+    def plot_radius_subplot(earth_model, key, x_label_text):
+        for i in range(len(earth_model["data"])):
+            plt.fill(
+                [
+                    0,
+                    0,
+                    earth_model["data"][key][i],
+                    earth_model["data"][key][i],
+                ],
+                [
+                    earth_model["data"]["bottom_radius"][i],
+                    earth_model["data"]["top_radius"][i],
+                    earth_model["data"]["top_radius"][i],
+                    earth_model["data"]["bottom_radius"][i],
+                ],
+                "b",
+            )
+        plt.xlabel(x_label_text)
+        plt.ylabel("radius (km)")
+
     plt.figure(figsize=(15, 5))
     plt.subplot(1, 4, 1)
-    for i in range(len(earth_model["data"])):
-        plt.fill(
-            [
-                0,
-                0,
-                earth_model["data"]["density"][i],
-                earth_model["data"]["density"][i],
-            ],
-            [
-                earth_model["data"]["bottom_radius"][i],
-                earth_model["data"]["top_radius"][i],
-                earth_model["data"]["top_radius"][i],
-                earth_model["data"]["bottom_radius"][i],
-            ],
-            "b",
-        )
-    plt.xlabel("density (g/cm^3)")
-    plt.ylabel("radius (km)")
+    plot_radius_subplot(earth_model, "density", "density (g/cm^3)")
 
     plt.subplot(1, 4, 2)
-    for i in range(len(earth_model["data"])):
-        plt.fill(
-            [
-                0,
-                0,
-                earth_model["data"]["bulk_modulus_physical"][i],
-                earth_model["data"]["bulk_modulus_physical"][i],
-            ],
-            [
-                earth_model["data"]["bottom_radius"][i],
-                earth_model["data"]["top_radius"][i],
-                earth_model["data"]["top_radius"][i],
-                earth_model["data"]["bottom_radius"][i],
-            ],
-            "b",
-        )
-    plt.xlabel("bulk modulus (Pa)")
-    # plt.ylabel("radius (km)")
+    plot_radius_subplot(earth_model, "bulk_modulus_physical", "bulk modulus (Pa)")
 
     plt.subplot(1, 4, 3)
-    for i in range(len(earth_model["data"])):
-        plt.fill(
-            [
-                0,
-                0,
-                earth_model["data"]["shear_modulus_physical"][i],
-                earth_model["data"]["shear_modulus_physical"][i],
-            ],
-            [
-                earth_model["data"]["bottom_radius"][i],
-                earth_model["data"]["top_radius"][i],
-                earth_model["data"]["top_radius"][i],
-                earth_model["data"]["bottom_radius"][i],
-            ],
-            "b",
-        )
-    plt.xlabel("shear modulus (Pa)")
-    # plt.ylabel("radius (km)")
+    plot_radius_subplot(earth_model, "shear_modulus_physical", "shear modulus (Pa)")
 
     plt.subplot(1, 4, 4)
-    for i in range(len(earth_model["data"])):
-        plt.fill(
-            [
-                0,
-                0,
-                earth_model["data"]["viscosity_physical_log10"][i],
-                earth_model["data"]["viscosity_physical_log10"][i],
-            ],
-            [
-                earth_model["data"]["bottom_radius"][i],
-                earth_model["data"]["top_radius"][i],
-                earth_model["data"]["top_radius"][i],
-                earth_model["data"]["bottom_radius"][i],
-            ],
-            "b",
-        )
-    plt.xlabel("log10 Maxwell viscosity (Pa s)")
-    # plt.ylabel("radius (km)")
-
+    plot_radius_subplot(
+        earth_model,
+        "maxwell_viscosity_physical_log10",
+        "log10 Maxwell viscosity (Pa s)",
+    )
     plt.show(block=True)
 
 
@@ -149,7 +108,6 @@ def main():
     print(earth_model["data"])
 
     # success = os.system(f"cp {earth_model['file_name']} earth.model")
-
     # cp earth.modelHOMO30 earth.model
     # nice decay4m <<! > /dev/null
     # 2 1500
