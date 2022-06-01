@@ -196,17 +196,23 @@ def plot_earth_model(earth_model, output_folder_name):
 
 def main():
     plt.close("all")
+    earth_model_file_name = "./data/earth.modelMAXWELL"
+    # earth_model_file_name = "./data/earth.modelBURG30"
+    print(f"Earth structure specified in: {earth_model_file_name}")
 
     # Create output folder name:
     output_folder_name = os.path.join("./output/", str(uuid.uuid4().hex))
-    print(output_folder_name)
+    print(f"Working in and saving results to: {output_folder_name}")
     if not os.path.exists(output_folder_name):
         os.makedirs(output_folder_name)
 
-    earth_model_file_name = "./data/earth.modelMAXWELL"
-    # earth_model_file_name = "./data/earth.modelBURG30"
-    print(earth_model_file_name)
+    # Copy all binaries to working folder
+    binaries_to_copy = ["decay", "decay4", "decay4m", "vsphdep", "vsphm", "vtordep"]
+    for file in binaries_to_copy:
+        print(file)
+        # os.path.join("./output/", str(uuid.uuid4().hex))
 
+    # Read and plot earth model
     earth_model = read_earth_model(earth_model_file_name)
     plot_earth_model(earth_model, output_folder_name)
 
@@ -226,6 +232,9 @@ def main():
     # !
     # nice strainA < strainx.inTHRUST > /dev/null mv strainA.out strainA.outTHRUSTg
 
+    # Remove binaries from working folder
+
+    # Drop into ipython REPL
     IPython.embed(banner1="")
 
 
