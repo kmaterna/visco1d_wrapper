@@ -131,6 +131,10 @@ def read_earth_model(earth_model_file_name):
         earth_model["data"]["kelvin_viscosity_mks"]
     )
 
+    # Delete columns that were used for temporary storage
+    earth_model["data"].drop(
+        columns=["to_process_1", "to_process_2", "to_process_3"], inplace=True
+    )
     return earth_model
 
 
