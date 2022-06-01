@@ -3,12 +3,14 @@ import numpy as np
 import IPython
 import argparse
 import os
+import uuid
 import pandas as pd
 
 # TODO: Replace os.system with subprocess?
 VISCO1D_BULK_MODULUS_TO_MKS_BULK_MODULUS = 1e10
 VISCO1D_SHEAR_MODULUS_TO_MKS_SHEAR_MODULUS = 1e10
 VISCO1D_VISCOSITY_TO_MKS_VISCOSITY = 1e18
+DPI_PNG = 500
 
 
 def read_earth_model(earth_model_file_name):
@@ -78,7 +80,7 @@ def read_earth_model(earth_model_file_name):
     return earth_model
 
 
-def plot_earth_model(earth_model):
+def plot_earth_model(earth_model, output_folder_name):
     # Plot earth model
 
     def plot_radius_subplot(earth_model, key, x_label_text):
@@ -117,14 +119,25 @@ def plot_earth_model(earth_model):
         "maxwell_viscosity_mks_log10",
         "log10 Maxwell viscosity (Pa s)",
     )
+
+    plt.savefig(os.path.join(output_folder_name, "earth_model.png"), dpi=DPI_PNG)
+    plt.savefig(os.path.join(output_folder_name, "earth_model.pdf"))
+    plt.close()
     plt.show(block=True)
 
 
 def main():
     plt.close("all")
+
+    # Create output folder name:
+    output_folder_name = os.path.join("./output/", str(uuid.uuid4().hex))
+    print(output_folder_name)
+    if not os.path.exists(output_folder_name):
+        os.makedirs(output_folder_name)
+
     earth_model_file_name = "./data/earth.modelMAXWELL"
     earth_model = read_earth_model(earth_model_file_name)
-    plot_earth_model(earth_model)
+    plot_earth_model(earth_model, output_folder_name)
 
     print(earth_model["data"])
 
