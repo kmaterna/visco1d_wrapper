@@ -6,6 +6,8 @@ import os
 import uuid
 import pandas as pd
 import shutil
+import stat
+from pathlib import Path
 
 # TODO: Replace os.system with subprocess?
 
@@ -216,17 +218,23 @@ def copy_binaries_to_output_folder(visco1d_binary_folder_name, output_folder_nam
     binaries_to_copy = ["decay", "decay4", "decay4m", "vsphdep", "vsphm", "vtordep"]
     for file_name in binaries_to_copy:
         try:
+            # Copy binary
             shutil.copyfile(
                 os.path.join(visco1d_binary_folder_name, file_name),
                 os.path.join(output_folder_name, file_name),
             )
             print(f"SUCCESS: Copied {file_name} to working folder")
+
+            # Modify permissions to make file excutable
+            f = Path(os.path.join(output_folder_name, file_name))
+            f.chmod(f.stat().st_mode | stat.S_IEXEC)
         except:
             print(f"FAILED to copy {file_name} to working folder")
 
 
 def main():
     visco1d_binary_folder_name = "./bin_visco1d/"
+    data_folder_name = "./data"
     earth_model_file_name = "./data/earth.modelMAXWELL"
     # earth_model_file_name = "./data/earth.modelBURG30"
 
@@ -239,11 +247,40 @@ def main():
     # Read and plot earth model
     earth_model = read_earth_model(earth_model_file_name, output_folder_name)
 
+    # Copy earth.model to working folder
+    try:
+        shutil.copyfile(
+            earth_model_file_name,
+            os.path.join(output_folder_name, "earth.model"),
+        )
+        print(
+            f"SUCCESS: Copied {earth_model_file_name} to {os.path.join(output_folder_name, 'earth.model')}"
+        )
+    except:
+        print(
+            f"FAILED to copy {earth_model_file_name} to {os.path.join(output_folder_name, 'earth.model')}"
+        )
+
     # success = os.system(f"cp {earth_model['file_name']} earth.model")
     # cp earth.modelHOMO30 earth.model
+
+    # Run decay
+    print("STARTING decay4m")
+    # decay_string = (
+    #     f"{os.path.join(output_folder_name, 'decay4m')} <<! > /dev/null \n 2 1500 \n !"
+    # )
+
+    # print(decay_string)
+    os.chdir("./output/demo/")
+    decay_string = "./decay4m <<! > /dev/null \n 2 1500 \n !"
+    success = os.system(decay_string)
+    print("FINISHED decay4m")
     # nice decay4m <<! > /dev/null
     # 2 1500
     # !
+
+    # Run vsphm
+
     # nice vsphm <<! > /dev/null 10.
     # !
     # nice decay <<! > /dev/null 2 1500
