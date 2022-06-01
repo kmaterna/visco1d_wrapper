@@ -61,7 +61,7 @@ def read_earth_model(earth_model_file_name):
             "top_radius",
             "density",
             "bulk_modulus",
-            "shear_modulus",
+            "maxwell_shear_modulus",
             "to_process_1",  # Could be Maxwell viscosity or Kelvin shear modulus
             "to_process_2",  # First column present if Burgers layer
             "to_process_3",  # First column present if Burgers layer
@@ -107,10 +107,11 @@ def read_earth_model(earth_model_file_name):
         earth_model["data"]["density"] * CGS_DENSITY_TO_MKS_DENSITY
     )
     earth_model["data"]["bulk_modulus_mks"] = (
-        earth_model["data"]["shear_modulus"] * VISCO1D_BULK_MODULUS_TO_MKS_BULK_MODULUS
+        earth_model["data"]["maxwell_shear_modulus"]
+        * VISCO1D_BULK_MODULUS_TO_MKS_BULK_MODULUS
     )
-    earth_model["data"]["shear_modulus_mks"] = (
-        earth_model["data"]["shear_modulus"]
+    earth_model["data"]["maxwell_shear_modulus_mks"] = (
+        earth_model["data"]["maxwell_shear_modulus"]
         * VISCO1D_SHEAR_MODULUS_TO_MKS_SHEAR_MODULUS
     )
     earth_model["data"]["kelvin_shear_modulus_mks"] = (
@@ -164,7 +165,9 @@ def plot_earth_model(earth_model, output_folder_name):
     plot_radius_subplot(earth_model, "bulk_modulus_mks", "bulk modulus (Pa)")
 
     plt.subplot(1, 6, 3)
-    plot_radius_subplot(earth_model, "shear_modulus_mks", "shear modulus (Pa)")
+    plot_radius_subplot(
+        earth_model, "maxwell_shear_modulus_mks", "Maxwell shear modulus (Pa)"
+    )
 
     plt.subplot(1, 6, 4)
     plot_radius_subplot(
@@ -174,7 +177,9 @@ def plot_earth_model(earth_model, output_folder_name):
     )
 
     plt.subplot(1, 6, 5)
-    plot_radius_subplot(earth_model, "kelvin_shear_modulus_mks", "shear modulus (Pa)")
+    plot_radius_subplot(
+        earth_model, "kelvin_shear_modulus_mks", "Kelvin shear modulus (Pa)"
+    )
 
     plt.subplot(1, 6, 6)
     plot_radius_subplot(
