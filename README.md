@@ -19,12 +19,14 @@ visco1d_wrapper/
 │   ├── earth_model_0001
 │   ├── earth_model_0002
 │   └── etc.
-└── runs/
-    ├── a27af56b-7d3b-4147-9ba1-626e04179437
+└── output/
+    ├── e1024fc284b24705a862523420739de0
     |   ├── earth_model.pdf
+    |   ├── earth_model.png
     |   └── strain.out
-    └── 09c86198-6cc5-436a-94ad-02883d401b6a
+    └── 8776d972320e439ebd0f1c0b3866c405
         ├── earth_model.pdf
+        ├── earth_model.png        
         └── strain.out
 ```
 
