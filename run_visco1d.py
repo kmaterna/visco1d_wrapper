@@ -5,6 +5,7 @@ import argparse
 import os
 import uuid
 import pandas as pd
+import shutil
 
 # TODO: Replace os.system with subprocess?
 
@@ -198,23 +199,39 @@ def plot_earth_model(earth_model, output_folder_name):
     plt.show(block=True)
 
 
-def main():
-    plt.close("all")
-    earth_model_file_name = "./data/earth.modelMAXWELL"
-    # earth_model_file_name = "./data/earth.modelBURG30"
-    print(f"Earth structure specified in: {earth_model_file_name}")
-
-    # Create output folder name:
+def create_output_folder():
     output_folder_name = os.path.join("./output/", str(uuid.uuid4().hex))
     print(f"Working in and saving results to: {output_folder_name}")
     if not os.path.exists(output_folder_name):
         os.makedirs(output_folder_name)
+    return output_folder_name
 
-    # Copy all binaries to working folder
+
+def copy_binaries_to_output_folder(visco1d_binary_folder_name, output_folder_name):
     binaries_to_copy = ["decay", "decay4", "decay4m", "vsphdep", "vsphm", "vtordep"]
-    for file in binaries_to_copy:
-        print(file)
-        # os.path.join("./output/", str(uuid.uuid4().hex))
+    for file_name in binaries_to_copy:
+        try:
+            shutil.copyfile(
+                os.path.join(visco1d_binary_folder_name, file_name),
+                os.path.join(output_folder_name, file_name),
+            )
+            print(f"SUCCESS: Copied {file_name} to working folder")
+        except:
+            print(f"FAILED to copy {file_name} to working folder")
+
+
+def main():
+    plt.close("all")
+    visco1d_binary_folder_name = "./bin_visco1d/"
+    earth_model_file_name = "./data/earth.modelMAXWELL"
+    # earth_model_file_name = "./data/earth.modelBURG30"
+    print(f"Earth structure specified in: {earth_model_file_name}")
+
+    # Create output folder
+    output_folder_name = create_output_folder()
+
+    # Copy all visco1d binaries to working folder
+    copy_binaries_to_output_folder(visco1d_binary_folder_name, output_folder_name)
 
     # Read and plot earth model
     earth_model = read_earth_model(earth_model_file_name)
