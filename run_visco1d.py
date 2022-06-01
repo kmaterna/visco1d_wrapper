@@ -20,7 +20,7 @@ VISCO1D_VISCOSITY_TO_MKS_VISCOSITY = 1e18
 DPI_PNG = 500
 
 
-def read_earth_model(earth_model_file_name):
+def read_earth_model(earth_model_file_name, output_folder_name):
     """
     Read earth model layers
 
@@ -43,6 +43,7 @@ def read_earth_model(earth_model_file_name):
     8. kelvin_viscosity
     """
 
+    print(f"Earth structure specified in: {earth_model_file_name}")
     earth_model = {}
     earth_model["file_name"] = earth_model_file_name
 
@@ -136,6 +137,10 @@ def read_earth_model(earth_model_file_name):
     earth_model["data"].drop(
         columns=["to_process_1", "to_process_2", "to_process_3"], inplace=True
     )
+
+    # Plot earth_model
+    plot_earth_model(earth_model, output_folder_name)
+
     return earth_model
 
 
@@ -221,11 +226,9 @@ def copy_binaries_to_output_folder(visco1d_binary_folder_name, output_folder_nam
 
 
 def main():
-    plt.close("all")
     visco1d_binary_folder_name = "./bin_visco1d/"
     earth_model_file_name = "./data/earth.modelMAXWELL"
     # earth_model_file_name = "./data/earth.modelBURG30"
-    print(f"Earth structure specified in: {earth_model_file_name}")
 
     # Create output folder
     output_folder_name = create_output_folder()
@@ -234,10 +237,7 @@ def main():
     copy_binaries_to_output_folder(visco1d_binary_folder_name, output_folder_name)
 
     # Read and plot earth model
-    earth_model = read_earth_model(earth_model_file_name)
-    plot_earth_model(earth_model, output_folder_name)
-
-    # print(earth_model["data"])
+    earth_model = read_earth_model(earth_model_file_name, output_folder_name)
 
     # success = os.system(f"cp {earth_model['file_name']} earth.model")
     # cp earth.modelHOMO30 earth.model
