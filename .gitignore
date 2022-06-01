@@ -1,5 +1,6 @@
 __pycache__/
 runs/
+output/
 bin_visco1d/
 *.py[cod]
 .ipynb_checkpoints
