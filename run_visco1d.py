@@ -261,25 +261,47 @@ def main():
             f"FAILED to copy {earth_model_file_name} to {os.path.join(output_folder_name, 'earth.model')}"
         )
 
-    # success = os.system(f"cp {earth_model['file_name']} earth.model")
-    # cp earth.modelHOMO30 earth.model
-
-    # Run decay
-    print("STARTING decay4m")
-    # decay_string = (
-    #     f"{os.path.join(output_folder_name, 'decay4m')} <<! > /dev/null \n 2 1500 \n !"
-    # )
-
-    # print(decay_string)
-    os.chdir("./output/demo/")
-    decay_string = "./decay4m <<! > /dev/null \n 2 1500 \n !"
-    success = os.system(decay_string)
-    print("FINISHED decay4m")
+    # Original Pollitz shell script
     # nice decay4m <<! > /dev/null
     # 2 1500
     # !
+    # nice vsphm <<! > /dev/null 10.
+    # !
+    # nice decay <<! > /dev/null 2 1500
+    # !
+    # nice vtordep <<! > /dev/null
+    # 10.
+    # !
+    # nice strainA < strainx.inTHRUST > /dev/null mv strainA.out strainA.outTHRUSTg
+
+    # Move to output/working folder
+    os.chdir("./output/demo/")
+
+    # Run decay
+    # Pollitz comments:
+    # Higher spherical harmonic degrees are strongly attenuated by
+    # the 16-km-thick upper elastic plate, which acts as a low bandpass
+    # filter. A rule of thumb which I always use is maximum degree
+    # \approx 2 pi * earth_radius ⁄ crustal_thickness.
+    # With earth_radius R =1200 km and an upper elastic plate thickness
+    # He=16 km we get maximum degree = 471, close to what appears above.
+    # Put another way, I take advantage of the fact that there is very
+    # little signal at wavelengths shorter than 16 km.
+    minimum_spherical_harmonic_degree = 2
+    maximum_spherical_harmonic_degree = 1500
+    print("STARTING decay4m")
+    decay_string = f"./decay4m << ! > /dev/null \n {minimum_spherical_harmonic_degree} {maximum_spherical_harmonic_degree} \n !"
+    print(decay_string)
+    # success = os.system(decay_string)
+    print("FINISHED decay4m")
 
     # Run vsphm
+    print("STARTING vsphm")
+    # os.chdir("./output/demo/")
+    vsphm_string = f"./vsphm << ! > /dev/null \n {minimum_spherical_harmonic_degree} {maximum_spherical_harmonic_degree} \n !"
+    print(vsphm_string)
+    # success = os.system(vsphm_string)
+    print("FINISHED vsphm")
 
     # nice vsphm <<! > /dev/null 10.
     # !
